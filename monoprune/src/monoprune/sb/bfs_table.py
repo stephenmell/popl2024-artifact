@@ -104,9 +104,13 @@ with open("results/bfs_table.tex", "w") as f:
     f.write(
         "% This file is programatically generated, so editing it manually is inadvisable.\n"
     )
-    f.write("\\begin{tabular}{l" + ("r" * (width - 1)) + "}\n")
+    f.write("\\begin{tabular}{lrrrrrrrrrrrrr}\n")
     f.write("\\toprule\n")
-    f.write("\n".join(" & ".join(r) + " \\\\" for r in cells))
+    f.write(
+        "\\multicolumn{2}{c}{\\textbf{Setting}} & \\multicolumn{2}{c}{\\textbf{10\\,sec}} & \\multicolumn{2}{c}{\\textbf{30\\,sec}} & \\multicolumn{2}{c}{\\textbf{1\\,min}} & \\multicolumn{2}{c}{\\textbf{2\\,min}} & \\multicolumn{2}{c}{\\textbf{5\\,min}} & \\multicolumn{2}{c}{\\textbf{10\\,min}} \\\\\n"
+    )
+    f.write("\\midrule\n")
+    f.write("\n".join(" & ".join(r) + " \\\\" for r in cells[1:]))
     f.write("\n")
     f.write("\\bottomrule\n")
     f.write("\\end{tabular}\n")

@@ -65,11 +65,15 @@ df_crim = pd.DataFrame(res_crim, columns=["n", "int_t", "smt_t"])
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import time
 
 print(df_marisurv)
 print(df_crim)
 
-for df, disp_name in [(df_marisurv, "Quivr"), (df_crim, "CRIM")]:
+for df, disp_name, ticks in [
+    (df_marisurv, "quivr_g", [5, 20, 40, 60, 80, 100]),
+    (df_crim, "crim_a", [3, 5, 10, 15, 20]),
+]:
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     fig.add_trace(
@@ -88,12 +92,46 @@ for df, disp_name in [(df_marisurv, "Quivr"), (df_crim, "CRIM")]:
             y=df["smt_t"],
             name="SMT",
             mode="lines",
+            line={"dash": "dash"},
         ),
         secondary_y=False,
     )
 
-    fig.update_layout(title_text=f"Dataset Size vs Synthesis Time for {disp_name}")
-    fig.update_xaxes(title_text="Number of Training Examples")
-    fig.update_yaxes(title_text="Time to Convergence (seconds)", secondary_y=False)
+    fig.update_layout(
+        showlegend=False,
+        font_family="Linux Biolinum",
+        font_color="black",
+        autosize=False,
+        width=350,
+        height=250,
+        plot_bgcolor="rgba(0, 0, 0, 0)",
+        margin=go.layout.Margin(
+            l=0,
+            r=0,
+            b=0,
+            t=0,
+        ),
+    )
+    fig.update_xaxes(
+        title_text="Number of Training Examples",
+        tickvals=ticks,
+        griddash="dot",
+        gridwidth=0.5,
+        gridcolor="black",
+        linewidth=0.5,
+        linecolor="black",
+    )
+    fig.update_yaxes(
+        title_text="Time to Convergence (sec)",
+        secondary_y=False,
+        type="log",
+        griddash="dot",
+        gridwidth=0.5,
+        gridcolor="black",
+        ticksuffix="  ",
+    )
     # fig.show()
+    # Plotly PDF export has an issue (https://github.com/plotly/plotly.py/issues/3469) on the first write
+    fig.write_image(f"results/fig_{disp_name}.pdf")
+    time.sleep(1)
     fig.write_image(f"results/fig_{disp_name}.pdf")
